@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
+import RootCom from "./components/RootCom/RootCom";
+import LoginPageCom from "./components/LoginPageCom/LoginPageCom";
+import { ToastContainer } from "react-toastify";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootCom />,
+    children: [{ path: "/login", element: <LoginPageCom /> }],
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <RouterProvider router={router} />
+      <ToastContainer />
     </div>
   );
 }
