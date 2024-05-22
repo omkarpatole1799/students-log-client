@@ -1,10 +1,9 @@
 import { Button, TextField } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function LoginPageCom() {
+function SignupPageCom() {
   const navigate = useNavigate();
 
   async function submitLoginFormHandler(e) {
@@ -41,25 +40,22 @@ function LoginPageCom() {
 
   return (
     <div>
-      <form
-        action=""
-        className="flex flex-col gap-6 container mx-auto"
-        onSubmit={submitLoginFormHandler}
-      >
-        <TextField label="email" name="email" />
-        <TextField label="password" name="password" />
+      <form action="" className="flex flex-col gap-6 container mx-auto">
+        <TextField label="name" />
+        <TextField label="email" />
+        <TextField label="password" />
+        <TextField label="mobile" />
+        <TextField label="address" />
 
         <div className="flex justify-center gap-6">
-          <Button variant="contained" type="submit">
-            Login
-          </Button>
+          <Button variant="outlined">Register</Button>
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={() => {
-              navigate("/signup");
+              navigate("/login");
             }}
           >
-            Sign up
+            Login
           </Button>
         </div>
       </form>
@@ -67,4 +63,4 @@ function LoginPageCom() {
   );
 }
 
-export default LoginPageCom;
+export default SignupPageCom;
