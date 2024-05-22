@@ -1,10 +1,13 @@
 import { Button, TextField } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function LoginPageCom() {
   const [showLoginForm, setShowLoginForm] = useState(true);
   const [showSignupForm, setShowSignupForm] = useState(false);
+  const navigate = useNavigate();
 
   async function submitLoginFormHandler(e) {
     e.preventDefault();
@@ -24,19 +27,20 @@ function LoginPageCom() {
       body: JSON.stringify({ email, password }),
       mode: "cors",
     });
-    let _data = await _res.json();
-    console.log(_data);
-    toast("Toast", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+    let { _success, _message, _data } = await _res.json();
+
+    if (_message == "Authorized") {
+      let decoded = jwtDecode(_data._token);
+      console.log(decoded);
+      toast(`Welcome ${decoded.name}`);
+    } else {
+      toast(_message);
+    }
+    if (_success) {
+      navigate("/dashboard");
+    }
   }
+
   return (
     <div>
       {showLoginForm && (

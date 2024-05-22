@@ -1,16 +1,15 @@
-import {
-  BrowserRouter,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootCom from "./components/RootCom/RootCom";
 import LoginPageCom from "./components/LoginPageCom/LoginPageCom";
-import { ToastContainer } from "react-toastify";
+import DashboardCom from "./components/DashboardCom/DashboardCom";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootCom />,
-    children: [{ path: "/login", element: <LoginPageCom /> }],
+    children: [
+      { path: "/login", element: <LoginPageCom /> },
+      { path: "/dashboard", element: <DashboardCom /> },
+    ],
   },
 ]);
 
@@ -18,7 +17,6 @@ function App() {
   return (
     <div>
       <RouterProvider router={router} />
-      <ToastContainer />
     </div>
   );
 }
