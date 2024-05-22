@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import Cookies from "js-cookie";
+
 function LoginPageCom() {
   const navigate = useNavigate();
 
@@ -34,7 +36,11 @@ function LoginPageCom() {
     } else {
       toast(_message);
     }
+
     if (_success) {
+      let decoded = jwtDecode(_data._token);
+      Cookies.set("token", _data._token, { expires: 7 });
+      Cookies.set("tId", decoded.userId, { expires: 7 });
       navigate("/dashboard");
     }
   }
