@@ -6,33 +6,32 @@ import { toast } from "react-toastify";
 function SignupPageCom() {
   const navigate = useNavigate();
 
-  async function submitLoginFormHandler(e) {
+  async function submitRegisterFormHandler(e) {
     e.preventDefault();
 
     let formData = new FormData(e.target);
     for (let [key, value] of formData) {
       console.log(key, value);
     }
-    let email = formData.get("email");
-    let password = formData.get("password");
+    let sendData = {
+      sName: formData.get("name"),
+      sEmail: formData.get("email"),
+      sMobile: formData.get("mobile"),
+      sAddress: formData.get("address"),
+      tId: 1,
+    };
 
-    let _res = await fetch("http://64.227.149.129:3000/auth/login", {
+    let _res = await fetch("http://64.227.149.129:3000/student/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(sendData),
       mode: "cors",
     });
     let { _success, _message, _data } = await _res.json();
 
-    if (_message == "Authorized") {
-      let decoded = jwtDecode(_data._token);
-      console.log(decoded);
-      toast(`Welcome ${decoded.name}`);
-    } else {
-      toast(_message);
-    }
+    toast(_message);
     if (_success) {
       navigate("/dashboard");
     }
@@ -40,15 +39,20 @@ function SignupPageCom() {
 
   return (
     <div>
-      <form action="" className="flex flex-col gap-6 container mx-auto">
-        <TextField label="name" />
-        <TextField label="email" />
-        <TextField label="password" />
-        <TextField label="mobile" />
-        <TextField label="address" />
+      <form
+        action=""
+        className="flex flex-col gap-6 container mx-auto"
+        onSubmit={submitRegisterFormHandler}
+      >
+        <TextField label="name" name="name" />
+        <TextField label="email" name="email" />
+        <TextField label="mobile" name="mobile" />
+        <TextField label="address" name="address" />
 
         <div className="flex justify-center gap-6">
-          <Button variant="outlined">Register</Button>
+          <Button variant="outlined" type="submit">
+            Register
+          </Button>
           <Button
             variant="contained"
             onClick={() => {
