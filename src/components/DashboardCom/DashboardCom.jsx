@@ -1,9 +1,21 @@
-import React from 'react'
+import { Button } from "@mui/material";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function DashboardCom() {
+  const navigate = useNavigate();
   return (
-    <div>DashboardCom</div>
-  )
+    <div>
+      <Button
+        variant="contained"
+        onClick={() => {
+          navigate("/dashbaord/add-student");
+        }}
+      >
+        Add Student
+      </Button>
+    </div>
+  );
 }
 
-export default DashboardCom
+export default DashboardCom;

@@ -43,10 +43,10 @@ function LoginPageCom() {
     <div>
       <form
         action=""
-        className="flex flex-col gap-6 container mx-auto"
+        className="flex flex-col gap-6 container mx-auto px-6 justify-center h-[100svh]"
         onSubmit={submitLoginFormHandler}
       >
-        <TextField label="email" name="email" />
+        <TextField label="email" name="email" autoFocus/>
         <TextField label="password" name="password" />
 
         <div className="flex justify-center gap-6">

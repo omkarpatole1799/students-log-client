@@ -3,6 +3,7 @@ import RootCom from "./components/RootCom/RootCom";
 import LoginPageCom from "./components/LoginPageCom/LoginPageCom";
 import DashboardCom from "./components/DashboardCom/DashboardCom";
 import SignupPageCom from "./components/SignupPageCom/SignupPageCom";
+import './App.css'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -11,6 +12,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPageCom /> },
       { path: "/signup", element: <SignupPageCom /> },
       { path: "/dashboard", element: <DashboardCom /> },
+      { path: "/dashboard/add-student", element:<DashboardCom/> },
     ],
   },
 ]);

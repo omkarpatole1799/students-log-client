@@ -14,14 +14,14 @@ function SignupPageCom() {
       console.log(key, value);
     }
     let sendData = {
-      sName: formData.get("name"),
-      sEmail: formData.get("email"),
-      sMobile: formData.get("mobile"),
-      sAddress: formData.get("address"),
-      tId: 1,
+      name: formData.get("name"),
+      email: formData.get("email"),
+      mobile: formData.get("mobile"),
+      address: formData.get("address"),
+      password: 1,
     };
 
-    let _res = await fetch("http://64.227.149.129:3000/student/add", {
+    let _res = await fetch("http://64.227.149.129:3000/admin/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,22 +32,28 @@ function SignupPageCom() {
     let { _success, _message, _data } = await _res.json();
 
     toast(_message);
+
     if (_success) {
-      navigate("/dashboard");
+      navigate("/login");
+      e.target.reset();
     }
   }
 
   return (
     <div>
+      <h2 className="font-semibold text-2xl text-center mt-5">
+        Register Admin
+      </h2>
       <form
         action=""
-        className="flex flex-col gap-6 container mx-auto"
+        className="flex flex-col gap-6 container mx-auto px-6 mt-6"
         onSubmit={submitRegisterFormHandler}
       >
-        <TextField label="name" name="name" />
+        <TextField label="name" name="name" autoFocus />
         <TextField label="email" name="email" />
         <TextField label="mobile" name="mobile" />
         <TextField label="address" name="address" />
+        <TextField label="password" name="password" />
 
         <div className="flex justify-center gap-6">
           <Button variant="outlined" type="submit">
