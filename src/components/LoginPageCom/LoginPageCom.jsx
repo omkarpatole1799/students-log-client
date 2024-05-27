@@ -30,6 +30,10 @@ function LoginPageCom() {
     if (_message == "Authorized") {
       let decoded = jwtDecode(_data._token);
       console.log(decoded);
+      localStorage.setItem('tId', decoded.userId)
+      localStorage.setItem('tName', decoded.name)
+      localStorage.setItem('tEmail', decoded.email)
+      localStorage.setItem('token', _data._token)
       toast(`Welcome ${decoded.name}`);
     } else {
       toast(_message);
@@ -46,7 +50,11 @@ function LoginPageCom() {
         className="flex flex-col gap-6 container mx-auto px-6 justify-center h-[100svh]"
         onSubmit={submitLoginFormHandler}
       >
-        <TextField label="email" name="email" autoFocus/>
+        <div>
+          <h2 className="text-sm mb-0 font-medium text-gray-700 text-center">Welcome</h2>
+          <h2 className="text-2xl font-semibold text-center text-gray-600">Login</h2>
+        </div>
+        <TextField label="email" name="email" autoFocus />
         <TextField label="password" name="password" />
 
         <div className="flex justify-center gap-6">

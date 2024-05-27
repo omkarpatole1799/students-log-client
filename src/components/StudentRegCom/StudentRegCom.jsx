@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function SignupPageCom() {
+function StudentRegCom() {
   const navigate = useNavigate();
 
   async function submitRegisterFormHandler(e) {
@@ -14,17 +14,21 @@ function SignupPageCom() {
       console.log(key, value);
     }
     let sendData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      mobile: formData.get("mobile"),
-      address: formData.get("address"),
-      password: 1,
+      sName: formData.get("name"),
+      sEmail: formData.get("email"),
+      sMobile: formData.get("mobile"),
+      sAddress: formData.get("address"),
+      tId: localStorage.getItem("tId"),
     };
+    console.log(sendData);
 
-    let _res = await fetch("http://64.227.149.129:3000/admin/add", {
+    let jwtToken = localStorage.getItem('token')
+
+    let _res = await fetch("http://localhost:3001/student/add ", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization" : `Bearer ${jwtToken}`
       },
       body: JSON.stringify(sendData),
       mode: "cors",
@@ -42,7 +46,7 @@ function SignupPageCom() {
   return (
     <div>
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
-        Register Admin
+        Register Student
       </h2>
       <form
         action=""
@@ -53,19 +57,10 @@ function SignupPageCom() {
         <TextField label="email" name="email" />
         <TextField label="mobile" name="mobile" />
         <TextField label="address" name="address" />
-        <TextField label="password" name="password" />
 
         <div className="flex justify-center gap-6">
           <Button variant="outlined" type="submit">
             Register
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Login
           </Button>
         </div>
       </form>
@@ -73,4 +68,4 @@ function SignupPageCom() {
   );
 }
 
-export default SignupPageCom;
+export default StudentRegCom;
