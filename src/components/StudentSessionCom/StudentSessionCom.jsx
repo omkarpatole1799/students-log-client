@@ -1,96 +1,102 @@
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { Button, MenuItem, TextField, TextareaAutosize } from "@mui/material";
+import { Select } from "@mui/base/Select";
+import { Option } from "@mui/base/Option";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import getAuthHeader from "../Utils/getAuthHeader";
 
 function StudentSessionCom() {
   const navigate = useNavigate();
+  const [studentsList, setStudentsList] = useState([]);
 
-  let [students, setStudents] = useState(null);
-
-  async function submitRegisterFormHandler(e) {
+  async function submitSessionFormHandler(e) {
     e.preventDefault();
 
-    let formData = new FormData(e.target);
-    for (let [key, value] of formData) {
-      console.log(key, value);
-    }
-    let sendData = {
-      sName: formData.get("name"),
-      sEmail: formData.get("email"),
-      sMobile: formData.get("mobile"),
-      sAddress: formData.get("address"),
-      tId: localStorage.getItem("tId"),
-    };
-    console.log(sendData);
+    let formData = Object.fromEntries(new FormData(e.target));
 
     let jwtToken = localStorage.getItem("token");
 
-    let _res = await fetch("http://localhost:3001/student/add ", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify(sendData),
-      mode: "cors",
-    });
+    let _res = await fetch(
+      `${process.env.REACT_APP_SERVER_IP}/admin/add-session`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader(),
+        },
+        body: JSON.stringify(formData),
+        mode: "cors",
+      }
+    );
     let { _success, _message, _data } = await _res.json();
+    console.log(_data);
 
     toast(_message);
-
     if (_success) {
-      navigate("/login");
       e.target.reset();
     }
   }
 
-  let jwtToken = localStorage.getItem("token");
   async function getStudentsList() {
-    let _res = await fetch("http://localhost:3001/student/list", {
+    let _res = await fetch(`${process.env.REACT_APP_SERVER_IP}/student/list`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
+        Authorization: getAuthHeader(),
       },
-      body: JSON.stringify({ teacherId: 1 }),
+      body: JSON.stringify({ teacherId: 1 }), // TODO: Omkar add teacher id dynamically of teacher who is loggedin currently
     });
 
     let _data = await _res.json();
-    console.log(_data._data._students);
-    setStudents(_data._data._student);
+    let list = _data._data._students;
+    setStudentsList(list);
   }
 
   useEffect(() => {
     getStudentsList();
-  });
+  }, []);
 
   return (
     <div>
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
         Student Session
       </h2>
+
       <form
         action=""
         className="flex flex-col gap-6 container mx-auto px-6 mt-6"
-        onSubmit={submitRegisterFormHandler}
+        onSubmit={submitSessionFormHandler}
       >
-        {/* <Select>
-          {students && students.map(student => {
-            return <MenuItem>{student?.s_name}</MenuItem>;
-          })}
-        </Select> */}
+        <Select label="Students">
+          {studentsList &&
+            studentsList.map((student, idx) => {
+              return (
+                <Option key={idx} value={student?.id}>
+                  {student?.s_name}
+                </Option>
+              );
+            })}
+        </Select>
 
-        <select name="" id="">
-          {students.map((el)=>{
-            return <option value="">HI</option>  
-          })}
-        </select>
-        <TextField label="name" name="name" autoFocus />
-        <TextField label="email" name="email" />
-        <TextField label="mobile" name="mobile" />
-        <TextField label="address" name="address" />
+        <TextField label="Time Start" name="time_start" autoFocus />
+        <TextField label="Time End" name="time_end" />
+        <TextField label="Topic Discussed" name="topic_discussed" />
+        <TextField label="Home Work" name="home_work" />
+        <TextField label="Video URL" name="video_url" />
+        <TextField label="Session Date" name="session_date" />
+
+        <Select label="Students" name="student_id">
+          {studentsList &&
+            studentsList.map((student, idx) => {
+              return (
+                <Option key={idx} value={student.id}>
+                  {student.s_name}
+                </Option>
+              );
+            })}
+        </Select>
 
         <div className="flex justify-center gap-6">
           <Button variant="outlined" type="submit">
