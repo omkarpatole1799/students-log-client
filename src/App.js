@@ -10,6 +10,7 @@ import SignupPageCom from "./components/SignupPageCom/SignupPageCom";
 import "./App.css";
 import StudentRegCom from "./components/StudentRegCom/StudentRegCom";
 import StudentSessionCom from "./components/StudentSessionCom/StudentSessionCom";
+import ViewSessionCom from "./components/ViewSessionCom/ViewSessionCom";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,10 +23,10 @@ const router = createBrowserRouter([
       }
     },
     children: [
-      { path: "/signup", element: <SignupPageCom /> },
       { path: "/dashboard", element: <DashboardCom /> },
       { path: "/dashboard/add-student", element: <StudentRegCom /> },
       { path: "/dashboard/add-session", element: <StudentSessionCom /> },
+      { path: "/dashboard/view-session", element: <ViewSessionCom /> },
     ],
   },
 
@@ -40,6 +41,8 @@ const router = createBrowserRouter([
     },
     element: <LoginPageCom />,
   },
+
+  { path: "/signup", element: <SignupPageCom /> },
 ]);
 
 function App() {

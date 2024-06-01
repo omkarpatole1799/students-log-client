@@ -7,7 +7,7 @@ function DashboardCom() {
 
   
   return (
-    <div>
+    <div className="grid grid-cols-2 gap-3 px-4 py-5">
       <Button
         variant="contained"
         onClick={() => {
@@ -18,6 +18,7 @@ function DashboardCom() {
       </Button>
 
 
+
       <Button
         variant="contained"
         onClick={() => {
@@ -25,6 +26,15 @@ function DashboardCom() {
         }}
       >
         Add Session
+      </Button>
+
+      <Button
+        variant="contained"
+        onClick={() => {
+          navigate("/dashboard/view-session");
+        }}
+      >
+        View Sessions
       </Button>
     </div>
   );

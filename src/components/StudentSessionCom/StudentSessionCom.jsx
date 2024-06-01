@@ -16,8 +16,6 @@ function StudentSessionCom() {
 
     let formData = Object.fromEntries(new FormData(e.target));
 
-    let jwtToken = localStorage.getItem("token");
-
     let _res = await fetch(
       `${process.env.REACT_APP_SERVER_IP}/admin/add-session`,
       {
@@ -46,7 +44,7 @@ function StudentSessionCom() {
         "Content-Type": "application/json",
         Authorization: getAuthHeader(),
       },
-      body: JSON.stringify({ teacherId: 1 }), // TODO: Omkar add teacher id dynamically of teacher who is loggedin currently
+      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }), // TODO: Omkar add teacher id dynamically of teacher who is loggedin currently
     });
 
     let _data = await _res.json();
@@ -86,17 +84,6 @@ function StudentSessionCom() {
         <TextField label="Home Work" name="home_work" />
         <TextField label="Video URL" name="video_url" />
         <TextField label="Session Date" name="session_date" />
-
-        <Select label="Students" name="student_id">
-          {studentsList &&
-            studentsList.map((student, idx) => {
-              return (
-                <Option key={idx} value={student.id}>
-                  {student.s_name}
-                </Option>
-              );
-            })}
-        </Select>
 
         <div className="flex justify-center gap-6">
           <Button variant="outlined" type="submit">
