@@ -39,6 +39,7 @@ function ViewSessionCom() {
 
     if (_data._sessions.length == 0) {
       toast("No session found");
+      setStudentSession([]);
       return;
     }
 
@@ -60,6 +61,11 @@ function ViewSessionCom() {
     });
 
     let _data = await _res.json();
+    console.log(_data, "-data---");
+    if (_data._message == "jwt expired") {
+      localStorage.clear();
+      return navigate("/login");
+    }
     let list = _data._data._students;
     setStudentsList(list);
   }
@@ -102,10 +108,10 @@ function ViewSessionCom() {
       </form>
 
       {/* student session table */}
-      <table>
+      <table className="text-sm table-auto">
         <thead>
-          <tr>
-            <th>Student ID</th>
+          <tr className="text-center text-sm border border-b-slate-400 bg-slate-300">
+            <th>Date</th>
             <th>Topic Discussed</th>
             <th>Home Work</th>
             <th>Time Start</th>
@@ -117,13 +123,13 @@ function ViewSessionCom() {
           {studentSession &&
             studentSession.map((session, idx) => {
               return (
-                <tr key={idx}>
-                  <th>{session.id}</th>
-                  <th>{session.topic_discussed}</th>
-                  <th>{session.home_work}</th>
-                  <th>{session.time_start}</th>
-                  <th>{session.time_end}</th>
-                  <th>{session.video_url}</th>
+                <tr key={idx} className="border border-b-slate-300">
+                  <td>{session.session_date?.toISOString() ?? null}</td>
+                  <td>{session.topic_discussed}</td>
+                  <td>{session.home_work}</td>
+                  <td>{session.time_start}</td>
+                  <td>{session.time_end}</td>
+                  <td className="w-11">{session.video_url}</td>
                 </tr>
               );
             })}

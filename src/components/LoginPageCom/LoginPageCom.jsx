@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getIP } from "../Utils/getIp";
 
 function LoginPageCom() {
   const navigate = useNavigate();
@@ -11,35 +12,44 @@ function LoginPageCom() {
     e.preventDefault();
 
     let formData = new FormData(e.target);
-    for (let [key, value] of formData) {
-      console.log(key, value);
-    }
+
     let email = formData.get("email");
     let password = formData.get("password");
 
-    let _res = await fetch("http://64.227.149.129:3000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-      mode: "cors",
-    });
-    let { _success, _message, _data } = await _res.json();
+    try {
+      let _res = await fetch(`${getIP()}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        mode: "cors",
+      });
+      console.log(_res, "res object");
+      let { _success, _message, _data } = await _res.json();
 
-    if (_message == "Authorized") {
-      let decoded = jwtDecode(_data._token);
-      console.log(decoded);
-      localStorage.setItem('tId', decoded.userId)
-      localStorage.setItem('tName', decoded.name)
-      localStorage.setItem('tEmail', decoded.email)
-      localStorage.setItem('token', _data._token)
-      toast(`Welcome ${decoded.name}`);
-    } else {
-      toast(_message);
-    }
-    if (_success) {
-      navigate("/dashboard");
+      if (_message == "Authorized") {
+        let decoded = jwtDecode(_data._token);
+        console.log(decoded);
+        localStorage.setItem("tId", decoded.userId);
+        localStorage.setItem("tName", decoded.name);
+        localStorage.setItem("tEmail", decoded.email);
+        localStorage.setItem("token", _data._token);
+        toast(`Welcome ${decoded.name}`);
+      } else {
+        toast(_message);
+      }
+      if (_success) {
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      alert('error')
+      toast('Here')
+      if (err.name == "TypeError") {
+        console.log('here', err)
+        toast("Not able to connect to server");
+        toast("Logging you out");
+      }
     }
   }
 
@@ -51,8 +61,12 @@ function LoginPageCom() {
         onSubmit={submitLoginFormHandler}
       >
         <div>
-          <h2 className="text-sm mb-0 font-medium text-gray-700 text-center">Welcome</h2>
-          <h2 className="text-2xl font-semibold text-center text-gray-600">Login</h2>
+          <h2 className="text-sm mb-0 font-medium text-gray-700 text-center">
+            Welcome
+          </h2>
+          <h2 className="text-2xl font-semibold text-center text-gray-600">
+            Login
+          </h2>
         </div>
         <TextField label="email" name="email" autoFocus />
         <TextField label="password" name="password" />

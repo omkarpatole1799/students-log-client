@@ -1,14 +1,17 @@
-import { Button, MenuItem, TextField, TextareaAutosize } from "@mui/material";
-import { Select } from "@mui/base/Select";
-import { Option } from "@mui/base/Option";
-import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Button, MenuItem, TextField } from "@mui/material";
+
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import getAuthHeader from "../Utils/getAuthHeader";
+import { getIP } from "../Utils/getIp";
+import { DatePicker } from "@mui/x-date-pickers";
 
 function StudentSessionCom() {
   const navigate = useNavigate();
+  const selectStudRef = useRef();
   const [studentsList, setStudentsList] = useState([]);
 
   async function submitSessionFormHandler(e) {
@@ -16,18 +19,16 @@ function StudentSessionCom() {
 
     let formData = Object.fromEntries(new FormData(e.target));
 
-    let _res = await fetch(
-      `${process.env.REACT_APP_SERVER_IP}/admin/add-session`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getAuthHeader(),
-        },
-        body: JSON.stringify(formData),
-        mode: "cors",
-      }
-    );
+    let _res = await fetch(`${getIP()}/admin/add-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(formData),
+      mode: "cors",
+    });
+    console.log(_res, "res from server");
     let { _success, _message, _data } = await _res.json();
     console.log(_data);
 
@@ -38,18 +39,34 @@ function StudentSessionCom() {
   }
 
   async function getStudentsList() {
-    let _res = await fetch(`${process.env.REACT_APP_SERVER_IP}/student/list`, {
+    let response = fetch(`${getIP()}/student/list`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: getAuthHeader(),
       },
-      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }), // TODO: Omkar add teacher id dynamically of teacher who is loggedin currently
-    });
+      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }),
+    })
+      .then(response => {
+        console.log(response);
 
-    let _data = await _res.json();
-    let list = _data._data._students;
-    setStudentsList(list);
+        return response.json();
+      })
+      .then(_data => {
+        let list = _data._data._students;
+        console.log(list, "list---");
+        setStudentsList(list);
+      })
+      .catch(err => {
+        if (err.name == "TypeError") {
+          toast("Not able to connect to server");
+          toast("Logging you out");
+          setTimeout(() => {
+            localStorage.clear();
+            navigate("/login");
+          }, 3000);
+        }
+      });
   }
 
   useEffect(() => {
@@ -67,23 +84,30 @@ function StudentSessionCom() {
         className="flex flex-col gap-6 container mx-auto px-6 mt-6"
         onSubmit={submitSessionFormHandler}
       >
-        <Select label="Students">
-          {studentsList &&
+        <TextField label="Select Student" select name="student_id" autoFocus>
+          <MenuItem value="1">--Select Student--</MenuItem>
+          {studentsList.length == 0 ? (
+            <MenuItem value="0">-- No Students Found --</MenuItem>
+          ) : (
             studentsList.map((student, idx) => {
               return (
-                <Option key={idx} value={student?.id}>
+                <MenuItem key={idx} value={student?.id}>
                   {student?.s_name}
-                </Option>
+                </MenuItem>
               );
-            })}
-        </Select>
+            })
+          )}
+        </TextField>
 
-        <TextField label="Time Start" name="time_start" autoFocus />
+        <TextField label="Time Start" name="time_start" />
         <TextField label="Time End" name="time_end" />
         <TextField label="Topic Discussed" name="topic_discussed" />
         <TextField label="Home Work" name="home_work" />
         <TextField label="Video URL" name="video_url" />
         <TextField label="Session Date" name="session_date" />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker label="Uncontrolled picker" />
+        </LocalizationProvider>
 
         <div className="flex justify-center gap-6">
           <Button variant="outlined" type="submit">
