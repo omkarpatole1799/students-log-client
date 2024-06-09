@@ -104,9 +104,8 @@ function StudentSessionCom() {
         <TextField label="Topic Discussed" name="topic_discussed" />
         <TextField label="Home Work" name="home_work" />
         <TextField label="Video URL" name="video_url" />
-        <TextField label="Session Date" name="session_date" />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label="Uncontrolled picker" />
+        <LocalizationProvider dateAdapter={AdapterDayjs} >
+          <DatePicker label="Session Date" name="session_date"/>
         </LocalizationProvider>
 
         <div className="flex justify-center gap-6">

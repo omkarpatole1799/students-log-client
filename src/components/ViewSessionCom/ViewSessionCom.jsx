@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import getAuthHeader from "../Utils/getAuthHeader";
+import { getIP } from "../Utils/getIp";
+
+import { MdDeleteOutline } from "react-icons/md";
+import { LuPencil } from "react-icons/lu";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
@@ -20,20 +24,17 @@ function ViewSessionCom() {
       return -1;
     }
 
-    let _res = await fetch(
-      `${process.env.REACT_APP_SERVER_IP}/admin/get-session`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getAuthHeader(),
-        },
-        body: JSON.stringify({
-          student_id: sId,
-        }),
-        mode: "cors",
-      }
-    );
+    let _res = await fetch(`${getIP()}/admin/get-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify({
+        student_id: sId,
+      }),
+      mode: "cors",
+    });
     let { _success, _message, _data } = await _res.json();
     console.log(_data);
 
@@ -51,17 +52,16 @@ function ViewSessionCom() {
   }
 
   async function getStudentsList() {
-    let _res = await fetch(`${process.env.REACT_APP_SERVER_IP}/student/list`, {
+    let _res = await fetch(`${getIP()}/student/list`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: getAuthHeader(),
       },
-      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }), // TODO: Omkar add teacher id dynamically of teacher who is loggedin currently
+      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }),
     });
 
     let _data = await _res.json();
-    console.log(_data, "-data---");
     if (_data._message == "jwt expired") {
       localStorage.clear();
       return navigate("/login");
@@ -73,6 +73,27 @@ function ViewSessionCom() {
   useEffect(() => {
     getStudentsList();
   }, []);
+
+  const deleteSessionHandler = async id => {
+    console.log("delete id", id);
+    let _deleteRes = await fetch(`${getIP()}/admin/delete-session`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify({ session_id: id }),
+    });
+
+    let { _message, _data } = await _deleteRes.json();
+
+    toast(_message);
+    console.log(_data, "delete data");
+  };
+
+  const editSessionHandler = id => {
+    console.log("edit id", id);
+  };
 
   return (
     <div>
@@ -117,6 +138,7 @@ function ViewSessionCom() {
             <th>Time Start</th>
             <th>Time End</th>
             <th>Video URL</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -124,12 +146,30 @@ function ViewSessionCom() {
             studentSession.map((session, idx) => {
               return (
                 <tr key={idx} className="border border-b-slate-300">
-                  <td>{session.session_date?.toISOString() ?? null}</td>
+                  <td>{session?.session_date ?? null}</td>
                   <td>{session.topic_discussed}</td>
                   <td>{session.home_work}</td>
                   <td>{session.time_start}</td>
                   <td>{session.time_end}</td>
                   <td className="w-11">{session.video_url}</td>
+                  <td className="flex flex-col gap-3 w-fit">
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      className=""
+                      onClick={deleteSessionHandler.bind(null, session.id)}
+                    >
+                      <MdDeleteOutline />
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      className=""
+                      onClick={editSessionHandler.bind(null, session.id)}
+                    >
+                      <LuPencil />
+                    </Button>
+                  </td>
                 </tr>
               );
             })}

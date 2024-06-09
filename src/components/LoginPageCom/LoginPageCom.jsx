@@ -43,12 +43,10 @@ function LoginPageCom() {
         navigate("/dashboard");
       }
     } catch (err) {
-      alert('error')
-      toast('Here')
+      alert("error");
       if (err.name == "TypeError") {
-        console.log('here', err)
+        console.log("here", err);
         toast("Not able to connect to server");
-        toast("Logging you out");
       }
     }
   }
