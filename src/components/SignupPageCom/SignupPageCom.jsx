@@ -21,7 +21,7 @@ function SignupPageCom() {
       password: 1,
     };
 
-    let _res = await fetch("http://64.227.149.129:3000/admin/add", {
+    let _res = await fetch(`${process.env.REACT_APP_SERVER_IP}/admin/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

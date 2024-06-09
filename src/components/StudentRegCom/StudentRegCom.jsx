@@ -1,7 +1,7 @@
 import { Button, TextField } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getIP } from "../Utils/getIp";
 
 function StudentRegCom() {
   const navigate = useNavigate();
@@ -10,9 +10,7 @@ function StudentRegCom() {
     e.preventDefault();
 
     let formData = new FormData(e.target);
-    for (let [key, value] of formData) {
-      console.log(key, value);
-    }
+
     let sendData = {
       sName: formData.get("name"),
       sEmail: formData.get("email"),
@@ -22,13 +20,13 @@ function StudentRegCom() {
     };
     console.log(sendData);
 
-    let jwtToken = localStorage.getItem('token')
+    let jwtToken = localStorage.getItem("token");
 
-    let _res = await fetch("http://localhost:3001/student/add ", {
+    let _res = await fetch(`${getIP()}/student/add `, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization" : `Bearer ${jwtToken}`
+        Authorization: `Bearer ${jwtToken}`,
       },
       body: JSON.stringify(sendData),
       mode: "cors",
