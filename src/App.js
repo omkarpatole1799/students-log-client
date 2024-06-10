@@ -3,13 +3,14 @@ import {
   createBrowserRouter,
   redirect,
 } from "react-router-dom";
-import RootCom from "./components/RootCom/RootCom";
-import LoginPageCom from "./components/LoginPageCom/LoginPageCom";
-import DashboardCom from "./components/DashboardCom/DashboardCom";
-import SignupPageCom from "./components/SignupPageCom/SignupPageCom";
 import "./App.css";
+import DashboardCom from "./components/DashboardCom/DashboardCom";
+import LoginPageCom from "./components/LoginPageCom/LoginPageCom";
+import RootCom from "./components/RootCom/RootCom";
+import SignupPageCom from "./components/SignupPageCom/SignupPageCom";
 import StudentRegCom from "./components/StudentRegCom/StudentRegCom";
 import StudentSessionCom from "./components/StudentSessionCom/StudentSessionCom";
+import Modal from "./components/UI/Modal";
 import ViewSessionCom from "./components/ViewSessionCom/ViewSessionCom";
 
 const router = createBrowserRouter([
@@ -50,6 +51,7 @@ function App() {
   return (
     <div>
       <RouterProvider router={router} />
+      <Modal staticBackdrop={true} />
     </div>
   );
 }
