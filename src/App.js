@@ -10,7 +10,6 @@ import RootCom from "./components/RootCom/RootCom";
 import SignupPageCom from "./components/SignupPageCom/SignupPageCom";
 import StudentRegCom from "./components/StudentRegCom/StudentRegCom";
 import StudentSessionCom from "./components/StudentSessionCom/StudentSessionCom";
-import Modal from "./components/UI/Modal";
 import ViewSessionCom from "./components/ViewSessionCom/ViewSessionCom";
 
 const router = createBrowserRouter([
@@ -51,7 +50,6 @@ function App() {
   return (
     <div>
       <RouterProvider router={router} />
-      <Modal staticBackdrop={true} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import useModalCtx from "../../hooks/useModalCtx";
+import { IoMdClose } from "react-icons/io";
 
-export default function Modal({ title, children, staticBackdrop = false }) {
+export default function CModal({ title, children, staticBackdrop = false }) {
   const { showModal, toggleModal } = useModalCtx();
   return (
     <>
@@ -23,19 +24,20 @@ export default function Modal({ title, children, staticBackdrop = false }) {
   );
 }
 
+
 export function ModalHeader({ title, toggleModal }) {
   return (
     <div className="border-b h-10">
       <div className="p-3 flex justify-between items-center">
         <h3>{title}</h3>
-        <button onClick={toggleModal}>x</button>
+        <button onClick={toggleModal}><IoMdClose/></button>
       </div>
     </div>
   );
 }
 
-export function ModalBody() {
-  return <div className="p-3">body</div>;
+export function ModalBody({children}) {
+  return <div className="py-3">{children}</div>;
 }
 
 export function ModalOverlay({ toggleModal, staticBackdrop }) {

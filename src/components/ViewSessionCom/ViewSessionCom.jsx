@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Input } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,12 +7,16 @@ import { getIP } from "../Utils/getIp";
 
 import { MdDeleteOutline } from "react-icons/md";
 import { LuPencil } from "react-icons/lu";
+import CModal from "../UI/CModal";
+import SessionForm from "../StudentSessionCom/SessionForm";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
   const [studentsList, setStudentsList] = useState([]);
   const [studentSession, setStudentSession] = useState([]);
   const studentNameRef = useRef(null);
+
+  const [editStudentData, setEditStudentData] = useState({});
 
   async function submitGetStudentSessionHandler(e) {
     e.preventDefault();
@@ -91,12 +95,18 @@ function ViewSessionCom() {
     console.log(_data, "delete data");
   };
 
-  const editSessionHandler = id => {
-    console.log("edit id", id);
+  const editSessionHandler = session => {
+    console.log("edit id", session);
+    setEditStudentData(session);
   };
 
   return (
     <div>
+      <CModal title={"Edit session details"}>
+        <form action="" id="edit-session-form">
+          <SessionForm isEdit={true} editData={editStudentData} />
+        </form>
+      </CModal>
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
         View Student Session
       </h2>
@@ -165,7 +175,7 @@ function ViewSessionCom() {
                       variant="outlined"
                       color="success"
                       className=""
-                      onClick={editSessionHandler.bind(null, session.id)}
+                      onClick={editSessionHandler.bind(null, session)}
                     >
                       <LuPencil />
                     </Button>
