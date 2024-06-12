@@ -1,23 +1,36 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 export const ModalContext = createContext({
-  showModal: false,
+  isModalOpen: () => {},
   toggleModal: () => {},
 });
 
 export default function ModalContextProvider({ children }) {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState({});
 
-  function toggleModal() {
-    setShowModal(!showModal);
+  function toggleModal(key) {
+    setShowModal(prev => {
+      return {
+        ...prev,
+        [key]: !prev[key],
+      };
+    });
+  }
+
+  function isModalOpen(key) {
+    return !!showModal[key];
   }
 
   const ctxValue = {
-    showModal,
     toggleModal,
+    isModalOpen,
   };
 
   return (
     <ModalContext.Provider value={ctxValue}>{children}</ModalContext.Provider>
   );
 }
+
+export const useModalCtx = () => {
+  return useContext(ModalContext);
+};

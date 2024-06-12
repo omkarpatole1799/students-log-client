@@ -1,11 +1,16 @@
-import useModalCtx from "../../hooks/useModalCtx";
 import { IoMdClose } from "react-icons/io";
+import { useModalCtx } from "../../context/ModalContext";
 
-export default function CModal({ title, children, staticBackdrop = false }) {
-  const { showModal, toggleModal } = useModalCtx();
+export default function CModal({
+  id,
+  title,
+  children,
+  staticBackdrop = false,
+}) {
+  const { isModalOpen, toggleModal } = useModalCtx();
   return (
     <>
-      {showModal && (
+      {isModalOpen(id) && (
         <>
           <ModalOverlay
             toggleModal={toggleModal}
@@ -15,7 +20,7 @@ export default function CModal({ title, children, staticBackdrop = false }) {
           <div
             className={` bg-white z-50 absolute shadow-xl min-h-[10rem] left-[50%] translate-x-[-50%] top-[10%] w-[80vw]`}
           >
-            <ModalHeader title={title} toggleModal={toggleModal} />
+            <ModalHeader id={id} title={title} toggleModal={toggleModal} />
             <ModalBody>{children}</ModalBody>
           </div>
         </>
@@ -24,19 +29,24 @@ export default function CModal({ title, children, staticBackdrop = false }) {
   );
 }
 
-
-export function ModalHeader({ title, toggleModal }) {
+export function ModalHeader({ id, title, toggleModal }) {
   return (
     <div className="border-b h-10">
       <div className="p-3 flex justify-between items-center">
         <h3>{title}</h3>
-        <button onClick={toggleModal}><IoMdClose/></button>
+        <button
+          onClick={() => {
+            toggleModal(id);
+          }}
+        >
+          <IoMdClose />
+        </button>
       </div>
     </div>
   );
 }
 
-export function ModalBody({children}) {
+export function ModalBody({ children }) {
   return <div className="py-3">{children}</div>;
 }
 

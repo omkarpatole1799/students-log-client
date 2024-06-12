@@ -9,12 +9,15 @@ import { MdDeleteOutline } from "react-icons/md";
 import { LuPencil } from "react-icons/lu";
 import CModal from "../UI/CModal";
 import SessionForm from "../StudentSessionCom/SessionForm";
+import { useModalCtx } from "../../context/ModalContext";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
   const [studentsList, setStudentsList] = useState([]);
   const [studentSession, setStudentSession] = useState([]);
   const studentNameRef = useRef(null);
+
+  const { toggleModal } = useModalCtx();
 
   const [editStudentData, setEditStudentData] = useState({});
 
@@ -96,17 +99,19 @@ function ViewSessionCom() {
   };
 
   const editSessionHandler = session => {
+    toggleModal("editSessionModal");
     console.log("edit id", session);
     setEditStudentData(session);
   };
 
   return (
     <div>
-      <CModal title={"Edit session details"}>
+      <CModal id={"editSessionModal"} title={"Edit session details"}>
         <form action="" id="edit-session-form">
           <SessionForm isEdit={true} editData={editStudentData} />
         </form>
       </CModal>
+
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
         View Student Session
       </h2>
