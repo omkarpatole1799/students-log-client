@@ -109,7 +109,7 @@ function ViewSessionCom() {
     if (!isModalOpen("editSessionModal")) {
       setIsEdit(false);
     }
-  },[toggleModal]);
+  }, [toggleModal]);
 
   return (
     <div>
@@ -149,52 +149,66 @@ function ViewSessionCom() {
       </form>
 
       {/* student session table */}
-      <table className="text-sm table-auto">
-        <thead>
-          <tr className="text-center text-sm border border-b-slate-400 bg-slate-300">
-            <th>Date</th>
-            <th>Topic Discussed</th>
-            <th>Home Work</th>
-            <th>Time Start</th>
-            <th>Time End</th>
-            <th>Video URL</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {studentSession &&
-            studentSession.map((session, idx) => {
-              return (
-                <tr key={idx} className="border border-b-slate-300">
-                  <td>{session?.session_date ?? null}</td>
-                  <td>{session.topic_discussed}</td>
-                  <td>{session.home_work}</td>
-                  <td>{session.time_start}</td>
-                  <td>{session.time_end}</td>
-                  <td className="w-11">{session.video_url}</td>
-                  <td className="flex flex-col gap-3 w-fit">
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      className=""
-                      onClick={deleteSessionHandler.bind(null, session.id)}
-                    >
-                      <MdDeleteOutline />
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      className=""
-                      onClick={editSessionHandler.bind(null, session)}
-                    >
-                      <LuPencil />
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+      <div className="overflow-auto mx-2 rounded-lg shadow-md mt-6">
+        <table className="table-fixed">
+          <thead>
+            <tr className="text-sm border shadow-slate-400 bg-slate-200">
+              <th className="p-3 whitespace-nowrap">Date</th>
+              <th className="p-3">Topic Discussed</th>
+              <th className="p-3 whitespace-nowrap">Home Work</th>
+              <th className="p-3 whitespace-nowrap">Time Start</th>
+              <th className="p-3 whitespace-nowrap">Time End</th>
+              <th className="p-3 whitespace-nowrap">Video URL</th>
+              <th className="p-3 whitespace-nowrap">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {studentSession &&
+              studentSession.map((session, idx) => {
+                return (
+                  <tr key={idx} className="border shadow-slate-300">
+                    <td className="p-3 whitespace-nowrap">
+                      {session?.session_date ?? null}
+                    </td>
+                    <td className="p-3 w-40">
+                      {session.topic_discussed}
+                    </td>
+                    <td className="p-3 whitespace-nowrap">
+                      {session.home_work}
+                    </td>
+                    <td className="p-3 whitespace-nowrap text-center">
+                      {session.time_start}
+                    </td>
+                    <td className="p-3 whitespace-nowrap text-center">
+                      {session.time_end}
+                    </td>
+                    <td className="p-3 whitespace-nowrap">
+                      {session.video_url}
+                    </td>
+                    <td className="p-3 whitespace-nowrap flex gap-2 justify-center items-center">
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        className=""
+                        onClick={deleteSessionHandler.bind(null, session.id)}
+                      >
+                        <MdDeleteOutline />
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="success"
+                        className=""
+                        onClick={editSessionHandler.bind(null, session)}
+                      >
+                        <LuPencil />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
