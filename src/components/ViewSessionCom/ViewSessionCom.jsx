@@ -17,10 +17,10 @@ function ViewSessionCom() {
   const [studentSession, setStudentSession] = useState([]);
   const studentNameRef = useRef(null);
 
-  const { toggleModal } = useModalCtx();
+  const { toggleModal, isModalOpen } = useModalCtx();
 
   const [editStudentData, setEditStudentData] = useState({});
-  const [isEdit, setIsEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(false);
 
   async function submitGetStudentSessionHandler(e) {
     e.preventDefault();
@@ -101,17 +101,20 @@ function ViewSessionCom() {
 
   const editSessionHandler = session => {
     toggleModal("editSessionModal");
-    console.log("edit id", session);
-    setIsEdit(true)
+    setIsEdit(true);
     setEditStudentData(session);
   };
+
+  useEffect(() => {
+    if (!isModalOpen("editSessionModal")) {
+      setIsEdit(false);
+    }
+  },[toggleModal]);
 
   return (
     <div>
       <CModal id={"editSessionModal"} title={"Edit session details"}>
-        <form action="" id="edit-session-form">
-          <SessionForm isEdit={isEdit} editData={editStudentData} />
-        </form>
+        <SessionForm isEdit={isEdit} editData={editStudentData} />
       </CModal>
 
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">

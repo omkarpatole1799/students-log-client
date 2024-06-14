@@ -10,9 +10,11 @@ import getAuthHeader from "../Utils/getAuthHeader";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { useModalCtx } from "../../context/ModalContext";
 
 export default function SessionForm({ isEdit = false, editData }) {
   const selectStudRef = useRef();
+  const { toggleModal } = useModalCtx();
   const navigate = useNavigate();
   const [studentsList, setStudentsList] = useState([]);
 
@@ -51,6 +53,7 @@ export default function SessionForm({ isEdit = false, editData }) {
         home_work: editData.home_work,
         video_url: editData.video_url,
         session_date: `${s[1]}/${s[0]}/${s[2]}`,
+        session_id: editData.id,
       });
     }
   }, [isEdit]);
@@ -58,8 +61,18 @@ export default function SessionForm({ isEdit = false, editData }) {
   async function submitSessionFormHandler(e) {
     e.preventDefault();
 
-    let _res = await fetch(`${getIP()}/admin/add-session`, {
-      method: "POST",
+    let url = `${getIP()}/admin/add-session`;
+    let method = "POST";
+
+    if (isEdit) {
+      url = `${getIP()}/admin/edit-session`;
+      method = "PUT";
+    }
+
+    console.log(sessionFormData);
+
+    let _res = await fetch(url, {
+      method,
       headers: {
         "Content-Type": "application/json",
         Authorization: getAuthHeader(),
@@ -74,6 +87,11 @@ export default function SessionForm({ isEdit = false, editData }) {
     toast(_message);
     if (_success) {
       e.target.reset();
+
+      if (isEdit) {
+        toggleModal("editSessionModal");
+        e.target.reset();
+      }
     }
   }
 
@@ -84,7 +102,7 @@ export default function SessionForm({ isEdit = false, editData }) {
         "Content-Type": "application/json",
         Authorization: getAuthHeader(),
       },
-      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }),
+      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }), // TODO (Omkar): Add helper method to get teacher ID from localstorage
     })
       .then(response => {
         console.log(response);
