@@ -1,6 +1,6 @@
 import { Button, Input } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import getAuthHeader from "../Utils/getAuthHeader";
 import { getIP } from "../Utils/getIp";
@@ -10,12 +10,18 @@ import { LuPencil } from "react-icons/lu";
 import CModal from "../UI/CModal";
 import SessionForm from "../StudentSessionCom/SessionForm";
 import { useModalCtx } from "../../context/ModalContext";
+import { MdOutlineOndemandVideo } from "react-icons/md";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
   const [studentsList, setStudentsList] = useState([]);
   const [studentSession, setStudentSession] = useState([]);
   const studentNameRef = useRef(null);
+
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    confirm: false,
+    deleteId: null,
+  });
 
   const { toggleModal, isModalOpen } = useModalCtx();
 
@@ -82,7 +88,23 @@ function ViewSessionCom() {
     getStudentsList();
   }, []);
 
+  useEffect(() => {
+    if (deleteConfirm.confirm) {
+      deleteSession(deleteConfirm.deleteId);
+    }
+  }, [deleteConfirm]);
+
   const deleteSessionHandler = async id => {
+    setDeleteConfirm(p => {
+      return {
+        ...p,
+        deleteId: id,
+      };
+    });
+    toggleModal("deleteConfirmModal");
+  };
+
+  const deleteSession = async id => {
     console.log("delete id", id);
     let _deleteRes = await fetch(`${getIP()}/admin/delete-session`, {
       method: "DELETE",
@@ -115,6 +137,43 @@ function ViewSessionCom() {
     <div>
       <CModal id={"editSessionModal"} title={"Edit session details"}>
         <SessionForm isEdit={isEdit} editData={editStudentData} />
+      </CModal>
+
+      <CModal id={"deleteConfirmModal"} title={"Delete Session"}>
+        <h3>Are you sure you want to delete the session?</h3>
+        <div className="flex justify-center mt-3 gap-2">
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              toggleModal("deleteConfirmModal");
+              setDeleteConfirm(p => {
+                return {
+                  ...p,
+                  confirm: true,
+                };
+              });
+            }}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={() => {
+              toggleModal("deleteConfirmModal");
+              setDeleteConfirm(p => {
+                return {
+                  ...p,
+                  confirm: false,
+                  deleteId: null,
+                };
+              });
+            }}
+          >
+            No
+          </Button>
+        </div>
       </CModal>
 
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
@@ -170,9 +229,7 @@ function ViewSessionCom() {
                     <td className="p-3 whitespace-nowrap">
                       {session?.session_date ?? null}
                     </td>
-                    <td className="p-3 w-40">
-                      {session.topic_discussed}
-                    </td>
+                    <td className="p-3 w-40">{session.topic_discussed}</td>
                     <td className="p-3 whitespace-nowrap">
                       {session.home_work}
                     </td>
@@ -183,25 +240,35 @@ function ViewSessionCom() {
                       {session.time_end}
                     </td>
                     <td className="p-3 whitespace-nowrap">
-                      {session.video_url}
+                      <a
+                        href={session.video_url}
+                        rel="noreferrer noopener"
+                        target="_blank"
+                      >
+                        <Button variant="outlined" color="info" className="">
+                          <MdOutlineOndemandVideo />
+                        </Button>
+                      </a>
                     </td>
-                    <td className="p-3 whitespace-nowrap flex gap-2 justify-center items-center">
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        className=""
-                        onClick={deleteSessionHandler.bind(null, session.id)}
-                      >
-                        <MdDeleteOutline />
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="success"
-                        className=""
-                        onClick={editSessionHandler.bind(null, session)}
-                      >
-                        <LuPencil />
-                      </Button>
+                    <td className="p-3 whitespace-nowrap">
+                      <div className=" flex gap-2 justify-center items-center">
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          className=""
+                          onClick={deleteSessionHandler.bind(null, session.id)}
+                        >
+                          <MdDeleteOutline />
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="success"
+                          className=""
+                          onClick={editSessionHandler.bind(null, session)}
+                        >
+                          <LuPencil />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
