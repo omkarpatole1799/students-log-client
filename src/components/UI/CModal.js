@@ -69,7 +69,7 @@ export function ModalHeader({ id, title, toggleModal }) {
 }
 
 export function ModalBody({ children }) {
-  return <div className="py-3">{children}</div>;
+  return <div className="p-3">{children}</div>;
 }
 
 export function ModalOverlay({ toggleModal, staticBackdrop }) {
