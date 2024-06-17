@@ -13,7 +13,6 @@ import dayjs from "dayjs";
 import { useModalCtx } from "../../context/ModalContext";
 
 export default function SessionForm({ isEdit = false, editData }) {
-  const selectStudRef = useRef();
   const { toggleModal } = useModalCtx();
   const navigate = useNavigate();
   const [studentsList, setStudentsList] = useState([]);
@@ -39,8 +38,6 @@ export default function SessionForm({ isEdit = false, editData }) {
 
   useEffect(() => {
     getStudentsList();
-
-    console.log(editData, "----");
 
     if (isEdit) {
       let s = editData.session_date.split("-");
@@ -86,44 +83,50 @@ export default function SessionForm({ isEdit = false, editData }) {
 
     toast(_message);
     if (_success) {
-      e.target.reset();
+      if (isEdit) toggleModal("editSessionModal");
 
-      if (isEdit) {
-        toggleModal("editSessionModal");
-        e.target.reset();
-      }
+      setSessionFormData({
+        student_id: "",
+        time_start: "",
+        time_end: "",
+        topic_discussed: "",
+        home_work: "",
+        video_url: "",
+        session_date: null,
+      });
     }
   }
 
   async function getStudentsList() {
-    fetch(`${getIP()}/student/list`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: getAuthHeader(),
-      },
-      body: JSON.stringify({ teacherId: localStorage.getItem("tId") }), // TODO (Omkar): Add helper method to get teacher ID from localstorage
-    })
-      .then(response => {
-        console.log(response);
-
-        return response.json();
-      })
-      .then(_data => {
-        let list = _data._data._students;
-        console.log(list, "list---");
-        setStudentsList(list);
-      })
-      .catch(err => {
-        if (err.name == "TypeError") {
-          toast("Not able to connect to server");
-          toast("Logging you out");
-          setTimeout(() => {
-            localStorage.clear();
-            navigate("/login");
-          }, 3000);
-        }
+    try {
+      let response = await fetch(`${getIP()}/student/list`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader(),
+        },
+        body: JSON.stringify({ teacherId: localStorage.getItem("tId") }), // TODO (Omkar): Add helper method to get teacher ID from localstorage
       });
+      console.log(response);
+      if (!response.ok) {
+        let error = new Error("Something went wrong while fetching");
+        error.info = await response.json();
+      }
+
+      let _data = await response.json();
+
+      let list = _data._data._students;
+      setStudentsList(list);
+    } catch (error) {
+      if (error.name == "TypeError") {
+        toast("Not able to connect to server");
+        toast("Logging you out");
+        setTimeout(() => {
+          localStorage.clear();
+          navigate("/login");
+        }, 3000);
+      }
+    }
   }
 
   return (
