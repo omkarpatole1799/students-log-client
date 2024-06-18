@@ -1,2 +1,9 @@
-[_] edit student session form
-[_] view session table UI refactoring
+[x] edit student session form
+  [_] refresh the student session list after update
+[!] view session table UI refactoring
+  [x] table design
+  [!] need to adjust column width 
+[_] validate jwt token on client side before loading the route
+[x] delete confirm dialouge
+  [~] refactor this into seperate component/ make redux state
+[x] watch video icon

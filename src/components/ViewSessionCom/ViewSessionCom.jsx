@@ -11,6 +11,8 @@ import CModal from "../UI/CModal";
 import SessionForm from "../StudentSessionCom/SessionForm";
 import { useModalCtx } from "../../context/ModalContext";
 import { MdOutlineOndemandVideo } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { ConfirmDialougeAction } from "../../redux-store/ConfirmDialougeSlice";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
@@ -18,10 +20,8 @@ function ViewSessionCom() {
   const [studentSession, setStudentSession] = useState([]);
   const studentNameRef = useRef(null);
 
-  const [deleteConfirm, setDeleteConfirm] = useState({
-    confirm: false,
-    deleteId: null,
-  });
+  const dispatch = useDispatch();
+  const deleteConfirm = useSelector(state => state.ConfirmDialougeSlice);
 
   const { toggleModal, isModalOpen } = useModalCtx();
 
@@ -89,19 +89,15 @@ function ViewSessionCom() {
   }, []);
 
   useEffect(() => {
-    if (deleteConfirm.confirm) {
+    if (deleteConfirm.isConfirm) {
       deleteSession(deleteConfirm.deleteId);
     }
+    console.log(deleteConfirm, "deleteconfirm useeffect");
   }, [deleteConfirm]);
 
   const deleteSessionHandler = async id => {
-    setDeleteConfirm(p => {
-      return {
-        ...p,
-        deleteId: id,
-      };
-    });
-    toggleModal("deleteConfirmModal");
+    toggleModal("confirmDialouge");
+    dispatch(ConfirmDialougeAction.setConfirmDetails(id));
   };
 
   const deleteSession = async id => {
@@ -119,6 +115,10 @@ function ViewSessionCom() {
 
     toast(_message);
     console.log(_data, "delete data");
+    let sessionsList = studentSession.filter(session => session.id != id);
+    setStudentSession(sessionsList);
+
+    dispatch(ConfirmDialougeAction.resetDeleteModal())
   };
 
   const editSessionHandler = session => {
@@ -137,43 +137,6 @@ function ViewSessionCom() {
     <div>
       <CModal id={"editSessionModal"} title={"Edit session details"}>
         <SessionForm isEdit={isEdit} editData={editStudentData} />
-      </CModal>
-
-      <CModal id={"deleteConfirmModal"} title={"Delete Session"}>
-        <h3>Are you sure you want to delete the session?</h3>
-        <div className="flex justify-center mt-3 gap-2">
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              toggleModal("deleteConfirmModal");
-              setDeleteConfirm(p => {
-                return {
-                  ...p,
-                  confirm: true,
-                };
-              });
-            }}
-          >
-            Yes
-          </Button>
-          <Button
-            variant="outlined"
-            color="success"
-            onClick={() => {
-              toggleModal("deleteConfirmModal");
-              setDeleteConfirm(p => {
-                return {
-                  ...p,
-                  confirm: false,
-                  deleteId: null,
-                };
-              });
-            }}
-          >
-            No
-          </Button>
-        </div>
       </CModal>
 
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">

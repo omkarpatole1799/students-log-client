@@ -3,10 +3,12 @@ import NavCom from "../NavCom/NavCom";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import ConfirmModal from "../UI/ConfirmModal";
 
 function RootCom() {
   return (
     <div>
+      <ConfirmModal />
       <div>
         <NavCom />
       </div>
