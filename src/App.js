@@ -11,18 +11,13 @@ import SignupPageCom from "./components/SignupPageCom/SignupPageCom";
 import StudentRegCom from "./components/StudentRegCom/StudentRegCom";
 import StudentSessionCom from "./components/StudentSessionCom/StudentSessionCom";
 import ViewSessionCom from "./components/ViewSessionCom/ViewSessionCom";
+import privateRouteLoader from "./components/Utils/privateRouterLoader";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootCom />,
-    loader: () => {
-      if (!localStorage.getItem("token")) {
-        return redirect("/login");
-      } else {
-        return null;
-      }
-    },
+    loader: privateRouteLoader,
     children: [
       { path: "/dashboard", element: <DashboardCom /> },
       { path: "/dashboard/add-student", element: <StudentRegCom /> },
@@ -33,13 +28,6 @@ const router = createBrowserRouter([
 
   {
     path: "/login",
-    loader: () => {
-      if (localStorage.getItem("token")) {
-        return redirect("/dashboard");
-      } else {
-        return null;
-      }
-    },
     element: <LoginPageCom />,
   },
 

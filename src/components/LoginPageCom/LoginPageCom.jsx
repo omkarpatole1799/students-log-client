@@ -4,9 +4,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getIP } from "../Utils/getIp";
+import { authActions } from "../../redux-store/authSlice";
+import { useDispatch } from "react-redux";
 
 function LoginPageCom() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   async function submitLoginFormHandler(e) {
     e.preventDefault();
@@ -29,13 +32,15 @@ function LoginPageCom() {
       let { _success, _message, _data } = await _res.json();
 
       if (_message == "Authorized") {
-        let decoded = jwtDecode(_data._token);
-        console.log(decoded);
-        localStorage.setItem("tId", decoded.userId);
-        localStorage.setItem("tName", decoded.name);
-        localStorage.setItem("tEmail", decoded.email);
-        localStorage.setItem("token", _data._token);
-        toast(`Welcome ${decoded.name}`);
+        // let decoded = jwtDecode(_data._token);
+        dispatch(authActions.setUser(_data._token));
+
+        // console.log(decoded);
+        // localStorage.setItem("tId", decoded.userId);
+        // localStorage.setItem("tName", decoded.name);
+        // localStorage.setItem("tEmail", decoded.email);
+        // localStorage.setItem("token", _data._token);
+        // toast(`Welcome ${decoded.name}`);
       } else {
         toast(_message);
       }
@@ -43,11 +48,11 @@ function LoginPageCom() {
         navigate("/dashboard");
       }
     } catch (err) {
-      alert("error");
-      if (err.name == "TypeError") {
+      if (err.message == "failed to fetch") {
         console.log("here", err);
         toast("Not able to connect to server");
       }
+      alert("error");
     }
   }
 
