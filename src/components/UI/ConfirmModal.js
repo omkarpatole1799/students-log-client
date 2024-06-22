@@ -3,6 +3,7 @@ import { useModalCtx } from "../../context/ModalContext";
 import CModal from "./CModal";
 import { useDispatch, useSelector } from "react-redux";
 import { ConfirmDialougeAction } from "../../redux-store/ConfirmDialougeSlice";
+import { ModalActions } from "../../redux-store/modalSlice";
 
 export default function ConfirmModal() {
   const { isModalOpen, toggleModal } = useModalCtx();
@@ -11,12 +12,13 @@ export default function ConfirmModal() {
   function confirmTrueHandler() {
     dispatch(ConfirmDialougeAction.confirmTrueHandler());
 
-    toggleModal("confirmDialouge");
+    dispatch(ModalActions.toggleModal('confirmDialouge'))
   }
 
   function confirmFalseHandler() {
     dispatch(ConfirmDialougeAction.confirmFalseHandler());
-    toggleModal("confirmDialouge");
+
+    dispatch(ModalActions.toggleModal('confirmDialouge'))
   }
   return (
     <>

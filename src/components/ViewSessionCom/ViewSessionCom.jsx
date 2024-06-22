@@ -13,6 +13,7 @@ import { useModalCtx } from "../../context/ModalContext";
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { ConfirmDialougeAction } from "../../redux-store/ConfirmDialougeSlice";
+import { ModalActions } from "../../redux-store/modalSlice";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ function ViewSessionCom() {
 
   const dispatch = useDispatch();
   const deleteConfirm = useSelector(state => state.ConfirmDialougeSlice);
+  console.log(deleteConfirm, "deleteConfirm---");
 
   const { toggleModal, isModalOpen } = useModalCtx();
 
@@ -118,26 +120,28 @@ function ViewSessionCom() {
     let sessionsList = studentSession.filter(session => session.id != id);
     setStudentSession(sessionsList);
 
-    dispatch(ConfirmDialougeAction.resetDeleteModal())
+    dispatch(ConfirmDialougeAction.resetDeleteModal());
   };
 
   const editSessionHandler = session => {
-    toggleModal("editSessionModal");
+    // toggleModal("editSessionModal");
+    dispatch(ModalActions.toggleModal('editSessionModal'))
     setIsEdit(true);
     setEditStudentData(session);
   };
 
+  // TODO (Omkar) : apply is modal open function 
   useEffect(() => {
-    if (!isModalOpen("editSessionModal")) {
-      setIsEdit(false);
-    }
+    // if (!isModalOpen("editSessionModal")) {
+    //   setIsEdit(false);
+    // }
   }, [toggleModal]);
 
   return (
     <div>
-      <CModal id={"editSessionModal"} title={"Edit session details"}>
+      {/* <CModal id={"editSessionModal"} title={"Edit session details"}>
         <SessionForm isEdit={isEdit} editData={editStudentData} />
-      </CModal>
+      </CModal> */}
 
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
         View Student Session
