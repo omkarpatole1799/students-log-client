@@ -1,8 +1,6 @@
 import { IoMdClose } from "react-icons/io";
-import { useModalCtx } from "../../context/ModalContext";
 import { useDispatch, useSelector } from "react-redux";
-import { ModalActions, toggleModal } from "../../redux-store/modalSlice";
-import { useEffect } from "react";
+import { ModalActions } from "../../redux-store/modalSlice";
 
 export default function CModal({
   id,
@@ -11,22 +9,18 @@ export default function CModal({
   staticBackdrop = false,
 }) {
   const _modalSlice = useSelector(state => state.modalSlice);
-  const dispatch = useDispatch();
-  console.log(_modalSlice, "--modal slice");
 
-  useEffect(() => {
-    function _isModalOpen(key) {
-      return !!_modalSlice[key];
-    }
-  },[_modalSlice]);
-  console.log(_isModalOpen(id), "-here");
+  function _isModalOpen(key) {
+    return !!_modalSlice[key];
+  }
+  console.log(_isModalOpen(id))
   return (
     <>
-      {_isModalOpen && <ModalOverlay staticBackdrop={staticBackdrop} />}
+      {_isModalOpen(id) && <ModalOverlay staticBackdrop={staticBackdrop} />}
 
       <div
         className={` bg-white !rounded-md z-50 transition-all duration-300 absolute shadow-xl min-h-[10rem] left-[50%] translate-x-[-50%] translate-y-[-50%] ${
-          _isModalOpen
+          _isModalOpen(id)
             ? `top-[50%] opacity-100 visible`
             : `top-[55%] opacity-0 invisible`
         } top-[50%] w-[80vw]`}

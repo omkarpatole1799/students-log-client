@@ -98,7 +98,7 @@ function ViewSessionCom() {
   }, [deleteConfirm]);
 
   const deleteSessionHandler = async id => {
-    toggleModal("confirmDialouge");
+    dispatch(ModalActions.toggleModal("confirmDialouge"));
     dispatch(ConfirmDialougeAction.setConfirmDetails(id));
   };
 
@@ -124,24 +124,26 @@ function ViewSessionCom() {
   };
 
   const editSessionHandler = session => {
-    // toggleModal("editSessionModal");
-    dispatch(ModalActions.toggleModal('editSessionModal'))
+    dispatch(ModalActions.toggleModal("editSessionModal"));
     setIsEdit(true);
     setEditStudentData(session);
   };
 
-  // TODO (Omkar) : apply is modal open function 
+  const _modalSlice = useSelector(state => state.modalSlice);
   useEffect(() => {
-    // if (!isModalOpen("editSessionModal")) {
-    //   setIsEdit(false);
-    // }
-  }, [toggleModal]);
+    function _isModalOpen(key) {
+      return !!_modalSlice[key];
+    }
+    if (!_isModalOpen("editSessionModal")) {
+      setIsEdit(false);
+    }
+  }, [_modalSlice]);
 
   return (
     <div>
-      {/* <CModal id={"editSessionModal"} title={"Edit session details"}>
+      <CModal id={"editSessionModal"} title={"Edit session details"}>
         <SessionForm isEdit={isEdit} editData={editStudentData} />
-      </CModal> */}
+      </CModal>
 
       <h2 className="text-2xl font-semibold text-center text-gray-600 mt-5">
         View Student Session
