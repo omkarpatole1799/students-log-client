@@ -116,7 +116,6 @@ function ViewSessionCom() {
     let { _message, _data } = await _deleteRes.json();
 
     toast(_message);
-    console.log(_data, "delete data");
     let sessionsList = studentSession.filter(session => session.id != id);
     setStudentSession(sessionsList);
 
