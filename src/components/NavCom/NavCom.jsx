@@ -89,7 +89,7 @@ function NavCom() {
 
         <NavLink className="flex items-center gap-3" onClick={logout}>
           <LuLogOut />
-          <span>logout</span>
+          <span>Logout</span>
         </NavLink>
       </div>
       <button>
