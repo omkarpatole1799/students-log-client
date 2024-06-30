@@ -1,24 +1,64 @@
 import { Button, TextField } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getIP } from "../Utils/getIp";
 import { authActions } from "../../redux-store/authSlice";
-import { useDispatch } from "react-redux";
+import { getIP } from "../Utils/getIp";
+import loginFormSchema from "./loginFormSchemaYUP";
 
 function LoginPageCom() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [formData, setFormData] = useState({
+    email: null,
+    password: null,
+  });
+
+  const handleInputChange = async e => {
+    let { name, value } = e.target;
+    console.log(name, value);
+
+    loginFormSchema
+      .validateAt(name, { [name]: value })
+      .then(() => {
+        setErrors({ ...errors, [name]: null });
+      })
+      .catch(error => {
+        setErrors({ ...errors, [name]: error.message });
+      });
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const [errors, setErrors] = useState({});
+
   async function submitLoginFormHandler(e) {
     e.preventDefault();
 
-    let formData = new FormData(e.target);
+    let { email, password } = formData;
 
-    let email = formData.get("email");
-    let password = formData.get("password");
+    try {
+      await loginFormSchema.validate(
+        { email, password },
+        { abortEarly: false }
+      );
+      await getUserLogin(email, formData);
+    } catch (error) {
+      let _errors = {};
+      error.inner.forEach(err => {
+        _errors[err.path] = err.message;
+      });
+      setErrors(_errors);
+    }
+    console.log(errors);
+  }
 
+  async function getUserLogin(email, password) {
     try {
       let _res = await fetch(`${getIP()}/auth/login`, {
         method: "POST",
@@ -32,15 +72,7 @@ function LoginPageCom() {
       let { _success, _message, _data } = await _res.json();
 
       if (_message == "Authorized") {
-        // let decoded = jwtDecode(_data._token);
         dispatch(authActions.setUser(_data._token));
-
-        // console.log(decoded);
-        // localStorage.setItem("tId", decoded.userId);
-        // localStorage.setItem("tName", decoded.name);
-        // localStorage.setItem("tEmail", decoded.email);
-        // localStorage.setItem("token", _data._token);
-        // toast(`Welcome ${decoded.name}`);
       } else {
         toast(_message);
       }
@@ -49,13 +81,10 @@ function LoginPageCom() {
       }
     } catch (err) {
       if (err.message == "failed to fetch") {
-        console.log("here", err);
         toast("Not able to connect to server");
       }
-      alert("error");
     }
   }
-
   return (
     <div>
       <form
@@ -71,8 +100,31 @@ function LoginPageCom() {
             Login
           </h2>
         </div>
-        <TextField label="email" name="email" autoFocus />
-        <TextField label="password" name="password" />
+        <div className="relative mb-4">
+          <TextField
+            label="email"
+            className="w-full"
+            name="email"
+            value={formData.email}
+            autoFocus
+            onChange={handleInputChange}
+            error={errors.email ? true : false}
+          />
+          {errors.email && <span className="error">{errors.email}</span>}
+        </div>
+
+        <div className="relative mb-4">
+          <TextField
+            label="password"
+            name="password"
+            value={formData.password}
+            className="w-full !ring-red-600 border-red-700"
+            onChange={handleInputChange}
+            error={errors.password ? true : false}
+          />
+
+          {errors.password && <span className="error">{errors.password}</span>}
+        </div>
 
         <div className="flex justify-center gap-6">
           <Button variant="contained" type="submit">
