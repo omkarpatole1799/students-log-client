@@ -1,22 +1,22 @@
 import { Button } from "@mui/material";
-import { useModalCtx } from "../../context/ModalContext";
-import CModal from "./CModal";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ConfirmDialougeAction } from "../../redux-store/ConfirmDialougeSlice";
+import { ModalActions } from "../../redux-store/modalSlice";
+import CModal from "./CModal";
 
 export default function ConfirmModal() {
-  const { isModalOpen, toggleModal } = useModalCtx();
 
   const dispatch = useDispatch();
   function confirmTrueHandler() {
     dispatch(ConfirmDialougeAction.confirmTrueHandler());
 
-    toggleModal("confirmDialouge");
+    dispatch(ModalActions.toggleModal('confirmDialouge'))
   }
 
   function confirmFalseHandler() {
     dispatch(ConfirmDialougeAction.confirmFalseHandler());
-    toggleModal("confirmDialouge");
+
+    dispatch(ModalActions.toggleModal('confirmDialouge'))
   }
   return (
     <>

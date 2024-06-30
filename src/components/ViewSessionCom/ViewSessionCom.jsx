@@ -13,6 +13,7 @@ import { useModalCtx } from "../../context/ModalContext";
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { ConfirmDialougeAction } from "../../redux-store/ConfirmDialougeSlice";
+import { ModalActions } from "../../redux-store/modalSlice";
 
 function ViewSessionCom() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ function ViewSessionCom() {
 
   const dispatch = useDispatch();
   const deleteConfirm = useSelector(state => state.ConfirmDialougeSlice);
+  console.log(deleteConfirm, "deleteConfirm---");
 
   const { toggleModal, isModalOpen } = useModalCtx();
 
@@ -96,7 +98,7 @@ function ViewSessionCom() {
   }, [deleteConfirm]);
 
   const deleteSessionHandler = async id => {
-    toggleModal("confirmDialouge");
+    dispatch(ModalActions.toggleModal("confirmDialouge"));
     dispatch(ConfirmDialougeAction.setConfirmDetails(id));
   };
 
@@ -114,24 +116,27 @@ function ViewSessionCom() {
     let { _message, _data } = await _deleteRes.json();
 
     toast(_message);
-    console.log(_data, "delete data");
     let sessionsList = studentSession.filter(session => session.id != id);
     setStudentSession(sessionsList);
 
-    dispatch(ConfirmDialougeAction.resetDeleteModal())
+    dispatch(ConfirmDialougeAction.resetDeleteModal());
   };
 
   const editSessionHandler = session => {
-    toggleModal("editSessionModal");
+    dispatch(ModalActions.toggleModal("editSessionModal"));
     setIsEdit(true);
     setEditStudentData(session);
   };
 
+  const _modalSlice = useSelector(state => state.modalSlice);
   useEffect(() => {
-    if (!isModalOpen("editSessionModal")) {
+    function _isModalOpen(key) {
+      return !!_modalSlice[key];
+    }
+    if (!_isModalOpen("editSessionModal")) {
       setIsEdit(false);
     }
-  }, [toggleModal]);
+  }, [_modalSlice]);
 
   return (
     <div>

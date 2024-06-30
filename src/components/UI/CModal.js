@@ -1,5 +1,6 @@
 import { IoMdClose } from "react-icons/io";
-import { useModalCtx } from "../../context/ModalContext";
+import { useDispatch, useSelector } from "react-redux";
+import { ModalActions } from "../../redux-store/modalSlice";
 
 export default function CModal({
   id,
@@ -7,58 +8,39 @@ export default function CModal({
   children,
   staticBackdrop = false,
 }) {
-  const { isModalOpen, toggleModal } = useModalCtx();
-  // return (
-  //   <>
-  //     {isModalOpen(id) && (
-  //       <>
-  //         <ModalOverlay
-  //           toggleModal={toggleModal}
-  //           staticBackdrop={staticBackdrop}
-  //         />
+  const _modalSlice = useSelector(state => state.modalSlice);
 
-  //         <div
-  //           className={` bg-white !rounded-md z-50 transition-all duration-300 absolute shadow-xl min-h-[10rem] left-[50%] translate-x-[-50%] translate-y-[-50%] top-[50%] w-[80vw]`}
-  //         >
-  //           <ModalHeader id={id} title={title} toggleModal={toggleModal} />
-  //           <ModalBody>{children}</ModalBody>
-  //         </div>
-  //       </>
-  //     )}
-  //   </>
-  // );
-
-  let _isModalOpen = isModalOpen(id);
-  console.log(_isModalOpen,'-here')
+  function _isModalOpen(key) {
+    return !!_modalSlice[key];
+  }
+  console.log(_isModalOpen(id))
   return (
     <>
-      {_isModalOpen && (
-        <ModalOverlay
-          toggleModal={toggleModal}
-          staticBackdrop={staticBackdrop}
-        />
-      )}
+      {_isModalOpen(id) && <ModalOverlay staticBackdrop={staticBackdrop} />}
 
       <div
         className={` bg-white !rounded-md z-50 transition-all duration-300 absolute shadow-xl min-h-[10rem] left-[50%] translate-x-[-50%] translate-y-[-50%] ${
-          _isModalOpen ? `top-[50%] opacity-100 visible` : `top-[55%] opacity-0 invisible`
+          _isModalOpen(id)
+            ? `top-[50%] opacity-100 visible`
+            : `top-[55%] opacity-0 invisible`
         } top-[50%] w-[80vw]`}
       >
-        <ModalHeader id={id} title={title} toggleModal={toggleModal} />
+        <ModalHeader id={id} title={title} />
         <ModalBody>{children}</ModalBody>
       </div>
     </>
   );
 }
 
-export function ModalHeader({ id, title, toggleModal }) {
+export function ModalHeader({ id, title }) {
+  const dispatch = useDispatch();
   return (
     <div className="border-b h-10">
       <div className="p-3 flex justify-between items-center">
         <h3>{title}</h3>
         <button
           onClick={() => {
-            toggleModal(id);
+            dispatch(ModalActions.toggleModal(id));
           }}
         >
           <IoMdClose />
@@ -72,13 +54,14 @@ export function ModalBody({ children }) {
   return <div className="p-3">{children}</div>;
 }
 
-export function ModalOverlay({ toggleModal, staticBackdrop }) {
+export function ModalOverlay({ id, staticBackdrop }) {
+  const dispatch = useDispatch();
   return (
     <div
       className="fixed inset-0 backdrop-blur-sm bg-gray-300/30 z-40"
       onClick={() => {
         if (staticBackdrop) return;
-        toggleModal();
+        dispatch(ModalActions.toggleModal(id));
       }}
     ></div>
   );
