@@ -1,7 +1,7 @@
 import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { authActions } from "../../redux-store/authSlice";
 import { getIP } from "../Utils/getIp";
@@ -126,18 +126,20 @@ function LoginPageCom() {
           {errors.password && <span className="error">{errors.password}</span>}
         </div>
 
-        <div className="flex justify-center gap-6">
+        <div className="flex flex-col gap-6">
           <Button variant="contained" type="submit">
             Login
           </Button>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              navigate("/signup");
-            }}
-          >
-            Sign up
-          </Button>
+
+          <span className="text-gray-500 text-center">
+            Dont' have account?&nbsp;
+            <Link
+              className="underline text-blue-500 underline-offset-2"
+              to={"/signup"}
+            >
+              Sign Up
+            </Link>
+          </span>
         </div>
       </form>
     </div>
