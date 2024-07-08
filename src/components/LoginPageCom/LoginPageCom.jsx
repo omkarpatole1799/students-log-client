@@ -17,22 +17,20 @@ function LoginPageCom() {
   });
 
   const handleInputChange = async e => {
-    let { name, value } = e.target;
-    console.log(name, value);
-
-    loginFormSchema
-      .validateAt(name, { [name]: value })
-      .then(() => {
-        setErrors({ ...errors, [name]: null });
-      })
-      .catch(error => {
-        setErrors({ ...errors, [name]: error.message });
-      });
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    // let { name, value } = e.target;
+    // console.log(name, value);
+    // loginFormSchema
+    //   .validateAt(name, { [name]: value })
+    //   .then(() => {
+    //     setErrors({ ...errors, [name]: null });
+    //   })
+    //   .catch(error => {
+    //     setErrors({ ...errors, [name]: error.message });
+    //   });
+    // setFormData({
+    //   ...formData,
+    //   [name]: value,
+    // });
   };
 
   const [errors, setErrors] = useState({});
@@ -43,11 +41,11 @@ function LoginPageCom() {
     let { email, password } = formData;
 
     try {
-      await loginFormSchema.validate(
-        { email, password },
-        { abortEarly: false }
-      );
-      await getUserLogin(email, formData);
+      // await loginFormSchema.validate(
+      //   { email, password },
+      //   { abortEarly: false }
+      // );
+      await getUserLogin(email, password);
     } catch (error) {
       let _errors = {};
       error.inner.forEach(err => {

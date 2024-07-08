@@ -40,7 +40,7 @@ function SignupPageCom() {
       password: 1,
     };
 
-    let _res = await fetch(`${process.env.REACT_APP_SERVER_IP}/admin/add`, {
+    let _res = await fetch(`${process.env.VITE_SERVER_IP}/admin/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -74,9 +74,10 @@ function NavCom() {
           onClick={toggleMenu}
         />
 
-        {NAV_ITEMS.map(el => {
+        {NAV_ITEMS.map((el, idx) => {
           return (
             <NavLink
+              key={idx}
               to={`/${el.link}`}
               className="flex items-center gap-3"
               onClick={toggleMenu}
@@ -105,7 +106,6 @@ function NavCom() {
           />
         )}
       </button>
-      
     </div>
   );
 }
