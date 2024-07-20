@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { authActions } from "../../redux-store/authSlice";
 import { getIP } from "../Utils/getIp";
 import loginFormSchema from "./loginFormSchemaYUP";
+import useHttp from "../../hooks/use-http.js";
 
 function LoginPageCom() {
   const navigate = useNavigate();
@@ -41,11 +42,11 @@ function LoginPageCom() {
     let { email, password } = formData;
 
     try {
-      // await loginFormSchema.validate(
-      //   { email, password },
-      //   { abortEarly: false }
-      // );
-      await getUserLogin(email, password);
+      await loginFormSchema.validate(
+        { email, password },
+        { abortEarly: false }
+      );
+      // await getUserLogin(email, password);
     } catch (error) {
       let _errors = {};
       error.inner.forEach(err => {

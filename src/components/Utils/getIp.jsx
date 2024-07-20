@@ -1,3 +1,3 @@
 export const getIP = () => {
-  return process.env.REACT_APP_SERVER_IP;
+  return process.env.VITE_SERVER_IP;
 };
